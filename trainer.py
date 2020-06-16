@@ -71,6 +71,7 @@ if __name__ == '__main__':
     trainer = cfg.trainer_type(cfg)
     writer = SummaryWriter(f'{cfg.root}/runs')
     for epoch in range(cfg.epoch_size):
+        print(f'Epoch {epoch}:')
         train_loader, test_loader = cfg.dataset_loader
         train_loss, train_accuracy = trainer.train(train_loader)
         writer.add_scalar('Train-Loss', train_loss, epoch + 1)
