@@ -9,18 +9,8 @@ class GRUNet(nn.Module):
         self.rnn = nn.GRU(
             input_size=input_size, 
             hidden_size=1024,
-            dropout=0.5,
             batch_first=True)
         self.classifier = nn.Sequential(
-            nn.Dropout(),
-            nn.Linear(1024, 1024),
-            self.relu,
-            nn.Dropout(),
-            nn.Linear(1024, 1024),
-            self.relu,
-            nn.Dropout(),
-            nn.Linear(1024, 1024),
-            self.relu,
             nn.Dropout(),
             nn.Linear(1024, output_size),
         )
