@@ -199,7 +199,7 @@ class ConvLstmNet(nn.Module):
         super(ConvLstmNet, self).__init__()
         self.features = ConvLSTM(
             input_dim=3,
-            hidden_dim=[6],
+            hidden_dim=[256],
             kernel_size=(3, 3), 
             num_layers=1,
             batch_first=True,
@@ -208,37 +208,9 @@ class ConvLstmNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((3, 3)) 
         self.classifier = nn.Sequential(
             nn.Dropout(),
-            nn.Linear(6 * 3 * 3, 1024),
+            nn.Linear(256 * 3 * 3, 1024),
             nn.ReLU(inplace=True),
             nn.Linear(1024, num_classes),
-        )   
-
-    
-    def forward(self, x): 
-        _, x = self.features(x)
-        x = self.avgpool(x[0][0])
-        x = torch.flatten(x, 1)
-        x = self.classifier(x)
-        return x
-
-
-class ConvLstmNetV2(nn.Module):
-    def __init__(self, num_classes):
-        super(ConvLstmNetV2, self).__init__()
-        self.features = ConvLSTM(
-            input_dim=3,
-            hidden_dim=[6],
-            kernel_size=(3, 3), 
-            num_layers=1,
-            batch_first=True,
-            bias=True,
-            return_all_layers=False)
-        self.avgpool = nn.AdaptiveAvgPool2d((3, 3)) 
-        self.classifier = nn.Sequential(
-            nn.Dropout(),
-            nn.Linear(3 * 3 * 3, 2048),
-            nn.ReLU(inplace=True),
-            nn.Linear(2048, num_classes),
         )   
 
     
