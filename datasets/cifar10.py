@@ -55,3 +55,4 @@ def cifar3d10(root, batch_size):
         to3d,
     ])
     return  cifar10(root, batch_size, transform, test_transform)
+

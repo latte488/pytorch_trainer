@@ -5,6 +5,7 @@ from importlib import import_module
 import os
 import shutil
 from time import time
+from torchvision.utils import save_image
 
 class Trainer:
 
@@ -56,6 +57,7 @@ class Trainer:
         with torch.no_grad():
             return self._do(loader, begin_update, end_update)
 
+
 class Classifier(Trainer):
 
     def __init__(self, cfg):
@@ -63,6 +65,24 @@ class Classifier(Trainer):
 
     def accuracy(self, outputs, labels):   
         return outputs.max(1)[1].eq(labels).sum().item() / labels.size(0)
+
+class ImageRegression(Trainer):
+
+    def __init__(self, cfg):
+        super(ImageRegression, self).__init__(cfg)
+        self.count = 0
+        self.imnum = 0
+        self.root = cfg.root
+    
+    def accuracy(self, outputs, labels):
+        self.count += 1
+        if self.count % 10000 == 0:
+            self.imnum += 1
+            save_image(outputs.data, f'{self.root}/{self.imnum}_output.png', nrow=4, normalize=True)
+            save_image(labels.data, f'{self.root}/{self.imnum}_label.png', nrow=4, normalize=True)
+            print(f'{self.imnum} image save.')
+
+        return 0
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

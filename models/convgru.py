@@ -4,7 +4,7 @@ from torchvision import models
 
 class ConvGRUCell(nn.Module):
 
-    def __init__(self, input_size, out_size, kernel_size, bias=True):
+    def __init__(self, input_size, out_size, kernel_size, bias=False):
         super(ConvGRUCell, self).__init__()
         self.input_size = input_size
         self.out_size = out_size
