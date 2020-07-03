@@ -5,7 +5,6 @@ class GRUNet(nn.Module):
 
     def __init__(self, input_size, output_size):
         super(GRUNet, self).__init__()
-        self.relu = nn.ReLU(inplace=True)
         self.rnn = nn.GRU(
             input_size=input_size, 
             hidden_size=1024,
