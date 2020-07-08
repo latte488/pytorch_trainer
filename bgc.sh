@@ -1,4 +1,4 @@
 #!bin/bash
 
-nohup python3 -u classifier.py $1 > $1.out &
+nohup python3 -u $1 $2 > $2.out &
 

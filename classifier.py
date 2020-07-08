@@ -54,7 +54,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     module_name = args.script.replace('/', '.')[:-3]
 
-    logdir = f'data/{module_name}/runs'
+    logdir = f'data/{module_name}'
     if os.path.exists(logdir):
         shutil.rmtree(logdir)
         os.makedirs(logdir)

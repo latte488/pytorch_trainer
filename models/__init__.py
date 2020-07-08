@@ -9,3 +9,6 @@ from .conv_tanh_rnn_net import *
 from .conv_relu_rnn_net import *
 from .conv_gru_net import *
 from .conv_lstm_net import *
+
+from .esn_net import *
+from .cesn import *
