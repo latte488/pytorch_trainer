@@ -1,65 +1,28 @@
 import torch
-import torch.nn as nn
-import torch.nn.init as init
-from torch.nn.parameter import Parameter
-import torch.nn.functional as F
-import math
-import random
+from torch import nn
 
-
-class ESNCell(nn.Module):
-    def __init__(self, size_in, size_res):
-        super(ESNCell, self).__init__()
-        self.size_in = size_in
-        self.size_res = size_res
-        self.w_in = Parameter(torch.Tensor(size_in, size_res))
-        self.register_buffer('w_res', torch.Tensor(size_res, size_res))
-        self.b = Parameter(torch.Tensor(size_res))
-        self.register_buffer('x', torch.Tensor(size_res))
-        self.reset_parameters()
-
-    def reset_parameters(self):
-        self._reset_weight_in()
-        self._reset_weight_res()
-        self._reset_bias()
-        self._reset_state()
-
-    def _reset_weight_in(self):
-        init.kaiming_uniform_(self.w_in, a=math.sqrt(5))
-
-    def _reset_weight_res(self):
-        adjency = torch.Tensor([random.randint(0, 1) for _ in range(self.size_res**2)])
-        init.kaiming_uniform_(self.w_res, a=math.sqrt(5))
-        self.w_res *= adjency.view(self.size_res, self.size_res)
-
-    def _reset_bias(self):
-        fan_in, _ = init._calculate_fan_in_and_fan_out(self.w_in)
-        bound = 1 / math.sqrt(fan_in)
-        init.uniform_(self.b, -bound, bound)
-
-    def _reset_state(self):
-        init.zeros_(self.x)
-
-    def forward(self, u):
-        self.x = torch.tanh(u @ self.w_in + self.x.detach() @ self.w_res + self.b)
-        return self.x
+if __name__ == '__main__':
+    import rc
+else:
+    from . import rc
 
 class ESN(nn.Module):
-    def __init__(self, size_in, size_res, batch_first=False):
+    def __init__(self):
         super(ESN, self).__init__()
-        self.cell = ESNCell(size_in, size_res)
-        self.batch_first = batch_first
+        self.rnn = rc.ESN(3 * 32 * 32, 1024, batch_first=True)
+        self.classifier = nn.Sequential(
+            nn.Dropout(),
+            nn.Linear(1024, 8),
+        )
 
-    def forward(self, xs):
-        if self.batch_first:
-            xs = xs.permute(1, 0, 2)
-            xs = self._forward(xs)
-            xs = xs.permute(1, 0, 2)
-        else:
-            xs = self._forward(xs)
-        return xs
+    def forward(self, x):
+        x = x.flatten(2)
+        x = self.rnn(x)
+        x = self.classifier(x[:, -1, :])
+        return x
 
-
-    def _forward(self, xs):
-        return torch.stack([self.cell(x) for x in xs])
-        
+if __name__ == '__main__':
+    model = ESN()
+    inputs = torch.randn(8, 10, 3, 32, 32)
+    outputs = model(inputs)
+    print(outputs.shape)

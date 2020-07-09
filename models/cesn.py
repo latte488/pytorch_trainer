@@ -1,21 +1,24 @@
 import torch
 from torch import nn
-from .esn import ESN
 
+if __name__ == '__main__':
+    import rc
+else:
+    from . import rc
 
 class CESN(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self):
         super(CESN, self).__init__()
         self.cnn = nn.Sequential(
-            nn.Conv2d(3, 1024, 3, bias=True),
-            nn.BatchNorm2d(1024),
+            nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
-            nn.AdaptiveAvgPool2d((3, 3)),
+            nn.MaxPool2d(kernel_size=2, stride=2),
         )
-        self.rnn = ESN(1024 * 3 * 3, 1024, batch_first=True)
+        self.rnn = rc.ESN(16 * (32 // 2) * (32 // 2), 1024, batch_first=True)
         self.classifier = nn.Sequential(
-            nn.Dropout(),
-            nn.Linear(1024, num_classes),
+            nn.Dropout(0.5),
+            nn.Linear(1024, 8),
         )
 
     def forward(self, x):
@@ -26,3 +29,9 @@ class CESN(nn.Module):
         x = self.rnn(x)
         x = self.classifier(x[:, -1, :])
         return x
+
+if __name__ == '__main__':
+    model = CESN()
+    inputs = torch.randn(8, 10, 3, 32, 32)
+    outputs = model(inputs)
+    print(outputs.shape)
