@@ -9,10 +9,10 @@ else:
 class ESN(nn.Module):
     def __init__(self):
         super(ESN, self).__init__()
-        self.rnn = rc.ESN(3 * 32 * 32, 1024, batch_first=True)
+        self.rnn = rc.ESN(3 * 32 * 32, 8192, batch_first=True)
         self.classifier = nn.Sequential(
             nn.Dropout(),
-            nn.Linear(1024, 8),
+            nn.Linear(8192, 8),
         )
 
     def forward(self, x):

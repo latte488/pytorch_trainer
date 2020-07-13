@@ -4,10 +4,10 @@ from torch import nn
 class RNN(nn.Module):
     def __init__(self):
         super(RNN, self).__init__()
-        self.rnn = nn.RNN(3 * 32 * 32, 1024, batch_first=True)
+        self.rnn = nn.RNN(3 * 32 * 32, 8192, batch_first=True)
         self.classifier = nn.Sequential(
             nn.Dropout(0.5),
-            nn.Linear(1024, 8),
+            nn.Linear(8192, 8),
         )   
     def forward(self, x): 
         x = torch.flatten(x, 2)
