@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import copy
 
 class RNN(nn.Module):
     def __init__(self):
@@ -17,6 +18,16 @@ class RNN(nn.Module):
 
 if __name__ == '__main__':
     model = RNN()
-    inputs = torch.randn(8, 10, 3, 32, 32)
+    clone = copy.deepcopy(model)
+    inputs = torch.ones(8, 10, 3, 32, 32)
     outputs = model(inputs)
-    print(outputs.shape)
+    loss = outputs.sum()
+    print(loss.backward)
+    cout = clone(inputs)
+    loss1 = cout.sum()
+    #cout2 = clone(inputs)
+    #loss2 = cout2.sum()
+    print(loss1.backward)
+    #print(loss2.backward)
+
+

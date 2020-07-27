@@ -89,5 +89,8 @@ if __name__ == '__main__':
         writer.add_scalar('Accuracy/Test', test_accuracy, epoch)
         print(f'Test  | Loss {test_loss:.3f} | Accuracy {test_accuracy:.3f}')
 
+        if epoch % 100 == 0:
+            torch.save(classifier.model.state_dict(), f'{logdir}/{epoch}.pt')
+
     writer.close()
 

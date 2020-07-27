@@ -4,3 +4,4 @@ from .esn import *
 from .crnn import *
 from .clstm import *
 from .cesn import *
+from .res_esn import *
